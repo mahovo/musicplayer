@@ -1,0 +1,254 @@
+.TH MUSICPLAYER 1 2026-10-26 musicplayer
+.SH NAME
+musicplayer \- minimal music player for the macOS terminal
+.SH SYNOPSIS
+.B music
+.br
+.B artist
+.PP
+.B mpdir
+.br
+.B mpsub
+.br
+.B mpplay
+.br
+.B mpartist
+.br
+.B mpfind
+.RI [ pattern ]
+.br
+.I command
+.B | mppipe
+.PP
+.B mpadd
+.br
+.B mpplayl
+.br
+.B mpview
+.br
+.B mpclear
+.PP
+.B mpman
+.SH DESCRIPTION
+.B musicplayer
+is a set of shell functions for bash and zsh, for browsing a music
+collection and playing it from the command line.
+Tracks are picked with
+.BR fzf (1)
+and played one after the other with
+.BR afplay (1).
+There is no library to import: the music directory is the library,
+and the playlist is a plain text file.
+.PP
+To load the functions, add this line to
+.I ~/.zshrc
+(zsh) or
+.I ~/.bash_profile
+(bash), using the path where you put
+.BR musicplayer :
+.PP
+.RS
+.EX
+source ~/musicplayer/musicplayer.sh
+.EE
+.RE
+.PP
+.BR music ,
+.BR artist ,
+.B mpartist
+and
+.B mpfind
+change the current directory of your shell,
+which is why
+.B musicplayer
+is a set of shell functions rather than a program.
+.PP
+Press
+.B Ctrl\-C
+to stop playback.
+.SH COMMANDS
+.SS Browsing
+.TP
+.B music
+Change to the music directory and list its contents with
+.BR less (1).
+Press
+.B q
+to quit.
+.TP
+.B artist
+Pick an artist directory from the music directory, change to it and list its
+contents.
+Move with the arrow keys and press
+.B Enter
+to select.
+The preview on the right shows what is in the highlighted directory.
+.SS Playing
+.TP
+.B mpdir
+Play all tracks in the current directory, in alphabetical order.
+.TP
+.B mpsub
+Play all tracks in the current directory and all its subdirectories,
+in random order: a new order each time.
+To play them in alphabetical order instead, see
+.BR EXAMPLES .
+.TP
+.B mpplay
+Pick tracks in the current directory and play them.
+Press
+.B Tab
+to select a track and go to the next one, or
+.B Shift\-Tab
+to select a track and go to the previous one, then press
+.BR Enter .
+.TP
+.B mpartist
+Pick an artist directory, as with
+.BR artist ,
+and play all tracks in it and its subdirectories in random order, as with
+.BR mpsub .
+.TP
+\fBmpfind\fR [\fIpattern\fR]
+Search the whole music directory for tracks whose file name contains
+.IR pattern ,
+pick one and play it.
+The search is case-sensitive.
+Without a
+.IR pattern ,
+all tracks are listed.
+Leaves you in the music directory.
+.TP
+\fIcommand\fR | \fBmppipe\fR
+Play the files listed by
+.IR command ,
+one path per line.
+Relative paths are relative to the current directory.
+.SS Playlist
+There is one playlist: a text file with the full path of one track on each
+line.
+.TP
+.B mpadd
+Pick tracks in the current directory and its subdirectories and add them to
+the end of the playlist.
+Select several tracks with
+.B Tab
+and
+.BR Shift\-Tab ,
+as in
+.BR mpplay .
+.TP
+.B mpplayl
+Play the playlist from the top.
+.TP
+.B mpview
+Open the playlist in your editor, to reorder or remove tracks.
+.TP
+.B mpclear
+Clear the playlist.
+.SS Help
+.TP
+.B mpman
+Show this manual.
+.SH ENVIRONMENT
+Set these before the line that sources
+.IR musicplayer.sh .
+.TP
+.B MUSICPLAYER_MUSIC_DIR
+The music directory.
+The default is
+.IR "~/Music/iTunes/iTunes Music" .
+The Music app usually keeps its files in
+.IR ~/Music/Music/Media.localized/Music .
+.TP
+.B MUSICPLAYER_PLAYLIST
+The playlist file.
+The default is
+.IR ~/.mpplaylist.txt .
+.TP
+.B EDITOR
+The editor used by
+.BR mpview .
+The default is
+.BR vim (1).
+.SH FILES
+.TP
+.I ~/.mpplaylist.txt
+The playlist, unless
+.B MUSICPLAYER_PLAYLIST
+is set.
+.SH EXAMPLES
+Pick an artist, then play one of their albums:
+.PP
+.RS
+.EX
+artist
+cd "Abbey Road"
+mpdir
+.EE
+.RE
+.PP
+Find a track by name and play it:
+.PP
+.RS
+.EX
+mpfind Blackbird
+.EE
+.RE
+.PP
+Play all tracks below the current directory in alphabetical order instead of
+random order.
+This is what
+.B mpsub
+runs, with
+.B sort
+in place of
+.BR "sort \-R" ;
+.B "mpsub | sort"
+would not work, because
+.B mpsub
+plays the tracks itself:
+.PP
+.RS
+.EX
+find . \-type f \e( \-name "*.mp3" \-o \-name "*.m4a" \e) |
+    sort | mppipe
+.EE
+.RE
+.PP
+Play the playlist in random order:
+.PP
+.RS
+.EX
+sort \-R ~/.mpplaylist.txt | mppipe
+.EE
+.RE
+.PP
+Play the last five tracks added to the playlist:
+.PP
+.RS
+.EX
+tail \-n 5 ~/.mpplaylist.txt | mppipe
+.EE
+.RE
+.SH NOTES
+.B mpdir
+and
+.B mpsub
+only play files ending in
+.I .mp3
+or
+.IR .m4a .
+.B mppipe
+plays any format that
+.BR afplay (1)
+can play.
+.PP
+.BR afplay (1)
+comes with macOS, so
+.B musicplayer
+only runs on macOS.
+.SH SEE ALSO
+.BR afplay (1),
+.BR fzf (1),
+.BR less (1)
