@@ -10,6 +10,16 @@ and the playlist is a plain text file.
 
 ![Demo: mpartist opens a list of artist folders; typing "reih" narrows it to Rei Harakami, whose albums show in a preview; Enter starts shuffled playback and Ctrl-C stops it.](assets/demo.gif)
 
+## Description
+`musicplayer` is a bare bones bash/zsh script that does what it says on the tin. It was written to suit my particular personal preferences on my own Mac setup. This is not a beta. There will be no added features (probably). It does exactly what I want it to do, no more, no less. But of course you can hack it to your heart's desire.
+
+## Background
+I have a large iTunes library of music that I have carefully collected for years. But I don't want to fire up a heavy app that needs to parse a large xml file and calculate "gapless" crap every time I want to listen to music. Also, I like to interact very directly with my music files without the assistance of an app trying to be smart. Luckily, the iTunes Music folder is organized in a way that the directory structure gives me all the info I need: Artist name at the top level, then album title, then track name as file names. I don't need any other metadata.
+
+`musicplayer` does offer one feature which takes it beyond just a boomer boom box. You can select tracks based on any algorithm you can imagine – using `grep`, `awk`, or whatever you like – and pipe it to `mppipe`, which will then play the selected tracks.
+
+How I like to use musicplayer: I have set up iTerm2 with a global hotkey window, so that I can toggle a floating terminal window on and off. Whenever I want to listen to music, I just hit the hotkey, make my selection, hit the hotkey again, and the music is playing in the background without any visual noise.
+
 ## Requirements
 
 - macOS (for `afplay`)
